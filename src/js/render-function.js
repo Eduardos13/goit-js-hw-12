@@ -1,6 +1,6 @@
 
 
-export function postTemplate(post) {
+function postTemplate(post) {
     return `
         <li class="gallery-item">
             <a href="${post.largeImageURL}">
