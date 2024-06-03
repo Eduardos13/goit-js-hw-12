@@ -17,6 +17,8 @@ const selectors = {
 selectors.loader.classList.add("hidden");
 selectors.loadMoreBtn.classList.add("hidden");
 
+const lightbox = new SimpleLightbox(".gallery a");
+
 let page = 1;
 let totalHits = 0;
 let query = "";
@@ -25,6 +27,8 @@ let query = "";
 async function handleSubmit(event) {
 
     event.preventDefault();
+    selectors.postsGallery.innerHTML = "";
+    page = 1;
 
     query = event.target.elements.searchQuery.value.trim();
 
@@ -33,12 +37,9 @@ async function handleSubmit(event) {
             title: "No data",
             message: "Please enter a search query"
         });
-
         return;
     }
 
-
-    selectors.postsGallery.innerHTML = "";
     selectors.loader.classList.remove("hidden");
     
     try {
@@ -50,15 +51,15 @@ async function handleSubmit(event) {
             iziToast.warning({
                 title: "No result",
                 message: "Sorry, there are no images matching your search query. Please try again!"
-            })
+            });
+            selectors.loadMoreBtn.classList.add("hidden");
         }
 
         const markup = postsTemplate(data.hits);
         selectors.postsGallery.insertAdjacentHTML("beforeend", markup);
-        const lightbox = new SimpleLightbox(".gallery a");
         lightbox.refresh();
 
-        if (totalHits > data.hits.length) {
+        if (totalHits > 15) {
             selectors.loadMoreBtn.classList.remove("hidden");
         }
 
@@ -88,7 +89,6 @@ async function handleLoadMore() {
         const data = await getPosts(query, page);
         const markup = postsTemplate(data.hits);
         selectors.postsGallery.insertAdjacentHTML("beforeend", markup);
-        const lightbox = new SimpleLightbox(".gallery a");
         lightbox.refresh();
 
         const item = document.querySelector(".gallery-item");
