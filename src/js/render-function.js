@@ -1,5 +1,3 @@
-
-
 function postTemplate(post) {
     return `
         <li class="gallery-item">
